@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /////////////* Programa do Livro *//////////////////////
 
@@ -15,8 +16,9 @@ void dgemm(int n, double* A, double* B, double* C){
     }
 }
 //***************************************************//
-double randfrom(double min, double max) 
-{
+
+
+double randfrom(double min, double max) {
     double range = (max - min); 
     double div = RAND_MAX / range;
     return min + (rand() / div);
@@ -28,68 +30,36 @@ double* vetor(int n){
     return temp;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 para o algoritmo ir calculando o DGEMM de 10 em 10 até 1000
 {
     char *argumento = argv[1];
     int n = atoi(argumento);
-    int len = n*n;
+    char *compilacao = "O0";
+    char *processador = "2,7 GHz Intel Core i5 Dual-Core";
 
-    double A[] = { 1.0, 2.0,
-                    3.0, 4.0}; // 2x2
-    double B[] = { 5.0, 6.0,
-                     7.0, 8.0}; // 2x2
-    double C[] = { 0.00, 0.00,
-                   0.00, 0.00 }; // 2x2
+    FILE *out_file = fopen("results-O0-i5.csv", "w");
+    fprintf(out_file, "N,CPU,Compilation Parameter,t(s)\n");
 
-    /* Compute C = AB */
-    dgemm(2, A, B, C);
+    for (int dim = 10; dim <=n; dim+=10 ){
+        int len = dim*dim;
+        clock_t start, end;
+        double cpu_time_used;
 
-    printf("\n Feito A x B \n");
-    printf("\nMatriz A - Linha \n");
-    printf("[ %g, %g ]\n",  A[0], A[2]);
-    printf("[ %g, %g ]\n", A[1], A[3]);
-    printf("\nMatriz B - Coluna \n");
-    printf("[ %g, %g ]\n",  B[0], B[2]);
-    printf("[ %g, %g ]\n", B[1], B[3]);
-    printf("\n--- Matriz Resultado ---\n");
-    printf("[ %g, %g ]\n",  C[0], C[2]);
-    printf("[ %g, %g ]\n", C[1], C[3]);
-
-    double * a = vetor(len);
-    for (int i = 0; i<len; i++){
-        a[i] = randfrom(1.0, 10.0);
-    }
-    double * b = vetor(len);
-    int w = 0;
-    for (int i=0; i<n; i++){
-        for (int j=0; j<n; j++){
-            if (i==j){
-                b[w] = 1;
-            }
-            else{
-                b[w] = 0;
-            }
-            w++;
+        double * a = vetor(len); // Criando Matriz/Vetor A com Zeros
+        double * b = vetor(len); // Criando Matriz/Vetor B
+        double * c = vetor(len);  // Por que double c[len] != double c[4]
+        for (int i=0; i<len; i++){ // Setando os elementos das matrizes matrizes
+            a[i] = i; // Matriz A = 1,2,3,...,N*N
+            b[i] = -1*i; // Matriz B = -1,-2,-3,...,-N*N
         }
+
+        start = clock();
+        dgemm(dim, a, b, c);
+        end = clock();
+        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+        fprintf(out_file, "%d,%s,%s,%f\n", dim, processador, compilacao, cpu_time_used);
     }
-    // for (int i = 0; i<len; i++){
-    //     b[i] = randfrom(1.0, 10.0);
-    // }
-    double * c = vetor(len);  // Por que double c[len] != double c[4]
 
-    dgemm(2, a, b, c);
-
-    printf("\n Feito a x b \n");
-    printf("\nMatriz a - Linha \n");
-    printf("[ %g, %g ]\n",  a[0], a[2]);
-    printf("[ %g, %g ]\n", a[1], a[3]);
-    printf("\nMatriz b - Coluna \n");
-    printf("[ %g, %g ]\n",  b[0], b[2]);
-    printf("[ %g, %g ]\n", b[1], b[3]);
-    printf("\n--- Matriz Resultado ---\n");
-    printf("[ %g, %g ]\n",  c[0], c[2]);
-    printf("[ %g, %g ]\n", c[1], c[3]);
-
-
+    fclose(out_file);
     return 0;
 }
