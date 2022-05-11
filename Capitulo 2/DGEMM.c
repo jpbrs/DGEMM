@@ -17,13 +17,6 @@ void dgemm(int n, double* A, double* B, double* C){
 }
 //***************************************************//
 
-
-double randfrom(double min, double max) {
-    double range = (max - min); 
-    double div = RAND_MAX / range;
-    return min + (rand() / div);
-}
-
 double* vetor(int n){
     double* temp;
     temp = (double*) malloc(n*sizeof(double));
@@ -35,7 +28,7 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
     char *argumento = argv[1];
     int n = atoi(argumento);
     char *compilacao = "O0";
-    char *processador = "2,7 GHz Intel Core i5 Dual-Core";
+    char *processador = "2.7 GHz Intel Core i5 Dual-Core";
 
     FILE *out_file = fopen("results-O0-i5.csv", "w");
     fprintf(out_file, "N,CPU,Compilation Parameter,t(s)\n");

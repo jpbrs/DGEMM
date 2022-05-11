@@ -4,7 +4,7 @@ import sys
 m = sys.argv[1]
 m = int(m)
 
-with open("results-i5-py-switched.csv","w+") as python_file:
+with open("results-i5-py.csv","w+") as python_file:
     python_file.write("N,CPU,Compilation Parameter,t(s)\n")
     for n in range(10,m,10):
         A = []
@@ -23,11 +23,13 @@ with open("results-i5-py-switched.csv","w+") as python_file:
         # print(B[1][0],B[1][1])
 
         start_time = time.time()
-        for j in xrange(n):
-            for i in xrange(n):
+        for i in xrange(n):
+            for j in xrange(n):
                 for k in xrange(n):
                     C[i][j] += A[i][k] * B[k][j]
         execution_time = time.time() - start_time
         python_file.write("{},{},{},{}\n".format(n,"2.7 GHz Intel Core i5 Dual-Core","None",execution_time))
         # print(C[0][0],C[0][1])
         # print(C[1][0],C[1][1])
+
+        print("Execution Time : {}".format(execution_time))
