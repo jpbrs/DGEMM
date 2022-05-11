@@ -15,7 +15,7 @@ void dgemm(size_t n, double* A, double* B, double* C){
                 _mm256_broadcast_sd(& B[k+j*n])));
             }
             _mm256_store_pd(& C[i+j*n], c0); /* C[i][j] = c0 */
-            // printf("%f, ",C[i+j*n]);
+            // printf("%.2f, ",C[i+j*n]);
         }
         // printf("\n");
     }
@@ -50,10 +50,12 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
             b[i] = -1*i; // Matriz B = -1,-2,-3,...,-N*N
         }
 
+        // printf("\n Multiplicação de Matrizes %dx%d \n", dim,dim);
+
         // printf("\nMatriz A\n");
         // for (int i=0; i<dim; i++){
         //     for (int j=0; j<dim; j++){
-        //         printf("%f, ",a[i+j*dim]);
+        //         printf("%.2f, ",a[i+j*dim]);
         //     }
         //     printf("\n");
         // }
@@ -61,7 +63,7 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
         // printf("\nMatriz B\n");
         // for (int i=0; i<dim; i++){
         //     for (int j=0; j<dim; j++){
-        //         printf("%f, ",b[i+j*dim]);
+        //         printf("%.2f, ",b[i+j*dim]);
         //     }
         //     printf("\n");
         // }
@@ -75,6 +77,8 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
         free(a);
         free(b);
         free(c);
+
+        // printf("--------------------------------------------------------------\n");
     }
 
     fclose(out_file);
