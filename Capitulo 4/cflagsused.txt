@@ -1,0 +1,6 @@
+gcc -mavx -msse2 -msse DGEMM.c
+
+flag , instruction set
+-mavx = AVX
+-msse2 = SSE2
+-msse = SSE
