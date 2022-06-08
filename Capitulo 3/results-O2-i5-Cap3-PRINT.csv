@@ -1,0 +1,11 @@
+N,CPU,Compilation Parameter,t(s)
+1,2.7 GHz Intel Core i5 Dual-Core,O2,0.000006
+2,2.7 GHz Intel Core i5 Dual-Core,O2,0.000007
+3,2.7 GHz Intel Core i5 Dual-Core,O2,0.000010
+4,2.7 GHz Intel Core i5 Dual-Core,O2,0.000014
+5,2.7 GHz Intel Core i5 Dual-Core,O2,0.000018
+6,2.7 GHz Intel Core i5 Dual-Core,O2,0.000023
+7,2.7 GHz Intel Core i5 Dual-Core,O2,0.000030
+8,2.7 GHz Intel Core i5 Dual-Core,O2,0.000036
+9,2.7 GHz Intel Core i5 Dual-Core,O2,0.000043
+10,2.7 GHz Intel Core i5 Dual-Core,O2,0.000054
