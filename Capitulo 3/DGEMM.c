@@ -4,7 +4,8 @@
 #include <time.h>
 #include <x86intrin.h>
 
-clock_t dgemm(size_t n, double* A, double* B, double* C){
+double dgemm(size_t n, double* A, double* B, double* C){
+    clock_t start = clock();
     for(size_t i = 0; i < n; i++){
         for(size_t j = 0; j < n; ++j){
             __m256d c0 = _mm256_setzero_pd(); /* c0 = C[i][j] */
@@ -18,22 +19,24 @@ clock_t dgemm(size_t n, double* A, double* B, double* C){
     }
 
     clock_t end = clock();
+    // printf("\nMatriz C\n");
+    // for (int i=0; i<n; i++){
+    //     for (int j=0; j<n; j++){
+    //         printf("%.2f, ",C[i+j*n]);
+    //     }
+    //     printf("\n");
+    // }
 
-    printf("\nMatriz C\n");
-    for (int i=0; i<n; i++){
-        for (int j=0; j<n; j++){
-            printf("%.2f, ",C[i+j*n]);
-        }
-        printf("\n");
-    }
-
-    return end;
+    // printf("%.2f, ",C[n-1+(n-1)*n]);
+    double cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+    return cpu_time_used;
 
 }
 
 double* vetor(int n){
     double* temp;
     temp = (double*) malloc(n*sizeof(__m256d));
+    // temp = (double*) aligned_alloc(n, n*sizeof(__m256d));
     return temp;
 }
 
@@ -41,10 +44,10 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
 {
     char *argumento = argv[1];
     int n = atoi(argumento);
-    char *compilacao = "O2";
+    char *compilacao = "O1";
     char *processador = "2.7 GHz Intel Core i5 Dual-Core";
 
-    FILE *out_file = fopen("results-O2-i5-Cap3-Corrigido.csv", "w");
+    FILE *out_file = fopen("results-O1-i5-Cap3.csv", "w");
     fprintf(out_file, "N,CPU,Compilation Parameter,t(s)\n");
 
     for (int dim = 1; dim <=n; dim+=1 ){
@@ -60,27 +63,25 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
             b[i] = -1*i; // Matriz B = -1,-2,-3,...,-N*N
         }
 
-        printf("\n Multiplicação de Matrizes %dx%d \n", dim,dim);
+        // printf("\n Multiplicação de Matrizes %dx%d \n", dim,dim);
 
-        printf("\nMatriz A\n");
-        for (int i=0; i<dim; i++){
-            for (int j=0; j<dim; j++){
-                printf("%.2f, ",a[i+j*dim]);
-            }
-            printf("\n");
-        }
+        // printf("\nMatriz A\n");
+        // for (int i=0; i<dim; i++){
+        //     for (int j=0; j<dim; j++){
+        //         printf("%.2f, ",a[i+j*dim]);
+        //     }
+        //     printf("\n");
+        // }
 
-        printf("\nMatriz B\n");
-        for (int i=0; i<dim; i++){
-            for (int j=0; j<dim; j++){
-                printf("%.2f, ",b[i+j*dim]);
-            }
-            printf("\n");
-        }
+        // printf("\nMatriz B\n");
+        // for (int i=0; i<dim; i++){
+        //     for (int j=0; j<dim; j++){
+        //         printf("%.2f, ",b[i+j*dim]);
+        //     }
+        //     printf("\n");
+        // }
 
-        start = clock();
-        end = dgemm(dim, a, b, c);
-        cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
+        cpu_time_used = dgemm(dim, a, b, c);
         fprintf(out_file, "%d,%s,%s,%f\n", dim, processador, compilacao, cpu_time_used);
 
         free(a);
