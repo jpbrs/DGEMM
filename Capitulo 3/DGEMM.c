@@ -4,8 +4,7 @@
 #include <time.h>
 #include <x86intrin.h>
 
-void dgemm(size_t n, double* A, double* B, double* C){
-    printf("\nMatriz C\n");
+clock_t dgemm(size_t n, double* A, double* B, double* C){
     for(size_t i = 0; i < n; i++){
         for(size_t j = 0; j < n; ++j){
             __m256d c0 = _mm256_setzero_pd(); /* c0 = C[i][j] */
@@ -14,16 +13,27 @@ void dgemm(size_t n, double* A, double* B, double* C){
                 /* c0 += A[i][k]*B[k][j] */ _mm256_mul_pd(_mm256_load_pd(& A[i+k*n]),
                 _mm256_broadcast_sd(& B[k+j*n])));
             }
-            _mm256_store_pd(& C[i+j*n], c0); /* C[i][j] = c0 */
+            _mm256_storeu_pd(& C[i+j*n], c0); /* C[i][j] = c0 */ // Lembrando que eh storeu pq a memoria nao ta alinhada
+        }
+    }
+
+    clock_t end = clock();
+
+    printf("\nMatriz C\n");
+    for (int i=0; i<n; i++){
+        for (int j=0; j<n; j++){
             printf("%.2f, ",C[i+j*n]);
         }
         printf("\n");
     }
+
+    return end;
+
 }
 
 double* vetor(int n){
     double* temp;
-    temp = (double*) malloc(n*sizeof(double));
+    temp = (double*) malloc(n*sizeof(__m256d));
     return temp;
 }
 
@@ -34,7 +44,7 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
     char *compilacao = "O2";
     char *processador = "2.7 GHz Intel Core i5 Dual-Core";
 
-    FILE *out_file = fopen("results-O2-i5-Cap3-PRINT.csv", "w");
+    FILE *out_file = fopen("results-O2-i5-Cap3-Corrigido.csv", "w");
     fprintf(out_file, "N,CPU,Compilation Parameter,t(s)\n");
 
     for (int dim = 1; dim <=n; dim+=1 ){
@@ -69,8 +79,7 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
         }
 
         start = clock();
-        dgemm(dim, a, b, c);
-        end = clock();
+        end = dgemm(dim, a, b, c);
         cpu_time_used = ((double) (end-start)) / CLOCKS_PER_SEC;
         fprintf(out_file, "%d,%s,%s,%f\n", dim, processador, compilacao, cpu_time_used);
 
