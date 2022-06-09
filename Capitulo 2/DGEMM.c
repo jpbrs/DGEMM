@@ -19,6 +19,7 @@ void dgemm(int n, double* A, double* B, double* C){
         printf("\n");
 
     }
+    return;
 }
 //***************************************************//
 
