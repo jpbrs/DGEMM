@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) // Passar como argumento um numero tipo 1000 pa
 {
     char *argumento = argv[1];
     int n = atoi(argumento);
-    char *compilacao = "O0";
+    char *compilacao = "O1";
     char *processador = "2.7 GHz Intel Core i5 Dual-Core";
 
     FILE *out_file = fopen("results-O0-mac-i5.csv", "w");
